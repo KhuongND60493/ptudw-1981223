@@ -1,0 +1,28 @@
+{
+  "name": "ptudw-1981223",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "c": "rm -rf node_modules",
+    "ci": "pnpm run c && pnpm i",
+    "dev": "npx nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-handlebars": "^8.0.1",
+    "express-handlebars-paginate": "^1.0.3",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.0",
+    "pg": "^8.13.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.4"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  }
+}
