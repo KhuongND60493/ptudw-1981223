@@ -30,7 +30,6 @@
                             <div class="col-md-6">
                                 <label>Password</label>
                                 <input class="form-control" type="password" placeholder="Password" name="password"
-                                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                                        required>
                             </div>
                             <div class="col-md-12">
@@ -50,6 +49,7 @@
                                     </div>
                                 </div>
                             {{/if}}
+                            <input type="hidden" name="reqUrl" value="{{reqUrl}}"/>
                         </div>
                     </div>
                 </form>

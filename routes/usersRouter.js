@@ -2,9 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/userController');
-const {body, validationResult} = require('express-validator');
+const authController = require('../controllers/authController');
 
-router.get('/checkout', controller.showCheckout);
+const {body, validationResult} = require('express-validator');
+router.use(authController.isLoggedIn);
+router.get('/checkout', authController.isLoggedIn, controller.showCheckout);
 router.post(
     '/placeorders',
     body('firstName').notEmpty().withMessage('Firstname is required!'),
