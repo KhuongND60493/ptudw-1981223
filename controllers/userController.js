@@ -1,10 +1,9 @@
 'use strict';
 const models = require('../models');
-const Op = require('sequelize').Op;
 
 let controller = {};
 controller.showCheckout = async (req, res) => {
-  let userId = 1;
+  let userId = req.user.id;
   if (req.session.cart.quantity > 0) {
     let addresses = await models.Address.findAll({
       where: {userId},
@@ -17,7 +16,6 @@ controller.showCheckout = async (req, res) => {
   }
 };
 controller.placeorders = async (req, res) => {
-  let userId = 1;
   let {
     payment = 'COD',
     firstName = '',
@@ -62,7 +60,7 @@ controller.placeorders = async (req, res) => {
 };
 
 async function saveOrders(req, res, status) {
-  let userId = 1;
+  let userId = req.user.id;
   let {items, ...rest} = req.session.cart.getCart();
   let order = await models.Order.create({
     userId,
