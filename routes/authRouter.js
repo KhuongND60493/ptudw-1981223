@@ -5,8 +5,9 @@ let controller = require('../controllers/authController');
 let {body, getErrorMessage} = require('../controllers/validator');
 
 router.get('/login', controller.showLogin);
+router.get('/logout', controller.logout);
 router.post('/login',
-    body('email').trim().notEmpty().withMessage('Email is required!!!').isEmail('Invalid email address!'),
+    body('email').trim().notEmpty().withMessage('Email is required!!!').isEmail().withMessage('Invalid email address!'),
     body('password').trim().notEmpty().withMessage('Password is required!!!'), (req, res, next) => {
         const errorMessage = getErrorMessage(req);
         if (errorMessage) {
@@ -14,4 +15,5 @@ router.post('/login',
         }
         next();
     }, controller.login);
+
 module.exports = router;
