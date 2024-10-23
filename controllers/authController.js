@@ -1,6 +1,7 @@
 'use strict';
-
 const passport = require('./passport');
+const models = require('../models');
+
 let controller = {};
 controller.showLogin = (req, res) => {
     if (req.isAuthenticated()) {
@@ -68,10 +69,28 @@ controller.isLoggedIn = (req, res, next) => {
 
 }
 
-controller.forgotPassword = (req, res) => {
+controller.forgotPassword = async (req, res) => {
     let email = req.body?.email || '';
-    if(email){
+    let user = await models.User.findOne({where: {email}});
+    if (user) {
+        const {sign} = require('./jwt');
+        const host = req.header('host');
+        const resetLink = `${req.protocol}://${host}/reset?token=${sign(email)}&email=${email}`;
+        const {sendForgotPasswordMail} = require('./mail');
+        sendForgotPasswordMail(user, host, resetLink).then(rs => {
+            console.log('email sent');
+            res.locals.forgotDone = true;
+            res.render('forgot-password');
+        }).catch(err => {
+            res.locals.forgotMessage = 'An error has occured when sending to your email.Please check your email address!';
+            res.render('forgot-password');
+        });
 
+    } else {
+        res.locals.forgotMessage = 'Email not exist';
+        res.render('forgot-password');
     }
+
 }
+
 module.exports = controller;
