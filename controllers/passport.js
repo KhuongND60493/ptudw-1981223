@@ -49,4 +49,35 @@ passport.use('local-login', new localStrategy({
     }
 }));
 
+passport.use('local-register', new localStrategy({
+    usernameField: 'email',
+    passwordField: 'password',
+    passReqToCallback: true
+}, async (req, email, password, done) => {
+    if (email) {
+        email = email.toLowerCase();
+    }
+    if (req.user) {
+        return done(null, req.user);
+    }
+    try {
+        let user = await models.User.findOne({
+            where: {email}
+        });
+        if (user) {
+            return done(null, false, req.flash('registerMessage', 'Email is already taken!'));
+        }
+        await models.User.create({
+            email,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            mobile: req.body.mobile,
+            password: bcrypt.hashSync(password, bcrypt.genSaltSync(8))
+        });
+        done(null, false, req.flash('registerMessage', 'You have registered successfully!Please login'))
+    } catch (e) {
+        done(e, null);
+    }
+}))
+
 module.exports = passport;
