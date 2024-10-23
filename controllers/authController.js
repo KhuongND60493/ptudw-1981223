@@ -1,6 +1,7 @@
 'use strict';
 const passport = require('./passport');
 const models = require('../models');
+const {where} = require("sequelize");
 
 let controller = {};
 controller.showLogin = (req, res) => {
@@ -75,7 +76,7 @@ controller.forgotPassword = async (req, res) => {
     if (user) {
         const {sign} = require('./jwt');
         const host = req.header('host');
-        const resetLink = `${req.protocol}://${host}/reset?token=${sign(email)}&email=${email}`;
+        const resetLink = `${req.protocol}://${host}/users/reset?token=${sign(email)}&email=${email}`;
         const {sendForgotPasswordMail} = require('./mail');
         sendForgotPasswordMail(user, host, resetLink).then(rs => {
             console.log('email sent');
@@ -92,5 +93,23 @@ controller.forgotPassword = async (req, res) => {
     }
 
 }
+controller.showResetPassword = (req, res) => {
+    let email = req.query.email;
+    let token = req.query.token;
+    const {verify} = require('./jwt');
+    if (!token || verify(token)) {
+        return res.render('reset-password', {expired: true})
+    } else {
+        return res.render('reset-password', {email, token})
+    }
 
+}
+controller.resetPassword = async (req, res) => {
+    let email = req.body.email;
+    let token = req.body.token;
+    let bcrypt = require('bcrypt');
+    let password = bcrypt.hashSync(req.body.password, bcrypt.genSalt(8));
+    await models.User.update({password}, {where: {email}});
+    return res.render('reset-password', {done: true})
+}
 module.exports = controller;
