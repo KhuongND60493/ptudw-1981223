@@ -67,4 +67,11 @@ controller.isLoggedIn = (req, res, next) => {
     res.redirect(`/users/login?reqUrl=${req.originalUrl}`);
 
 }
+
+controller.forgotPassword = (req, res) => {
+    let email = req.body?.email || '';
+    if(email){
+
+    }
+}
 module.exports = controller;
